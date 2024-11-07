@@ -1,3 +1,26 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": [
+    "next/core-web-vitals"
+  ],
+  "rules": {
+    "indent": ["error", 2],
+    // 去除分号
+    "semi": ["error", "never"],
+    // 移除未使用变量
+    "no-unused-vars": "off",
+    // 未使用的import
+    "unused-imports/no-unused-imports":"error",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ],
+    // key-spaceing
+    "key-spacing": [
+      "error",
+      { "beforeColon": false}
+    ],
+    "object-curly-spacing": ["error", "always"],
+    "comma-spacing": ["error", { "before": false, "after": true }]
+  },
+  "plugins": ["unused-imports"]
 }

@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label"
 import { Plus, X } from "lucide-react"
-import { ComponentByUserType } from "@/components/activity/rule-components"
+import { ComponentByUserType } from "@/components/rule/rule-components"
 export type RuleGroup = {
   logic: 'and' | 'or'
   rule: Rule[]
@@ -32,7 +32,7 @@ export const UserTypeList = [
   { key: '回访', value: 'revisit' }
 ]
 
-function RuleForm({ rule, onChange, onDelete, userAttrList }: RuleFormProps) {
+function RuleFormComponent({ rule, onChange, onDelete, userAttrList }: RuleFormProps) {
   const handleBasicRuleChange = (ruleValue: Partial<BaseRule>) => {
     onChange({ ...rule, ...ruleValue })
   }
@@ -117,7 +117,7 @@ export function RuleGroupComponent({ group, onChange, onDelete, level = 0, userA
               userAttrList={userAttrList}
             />
           ) : (
-            <RuleForm
+            <RuleFormComponent
               key={index}
               rule={rule}
               userAttrList={userAttrList}
