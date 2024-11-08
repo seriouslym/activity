@@ -21,11 +21,14 @@ export const peopleDivisionSlice = createSlice({
     updatePeopleDivision: (state, action: PayloadAction<PeoPleDivision>) => {
       const index = state.peopleDivisions.findIndex(item => item.name === action.payload.name)
       state.peopleDivisions[index] = action.payload
+    },
+    clearPeopleDivision: (state) => {
+      state.peopleDivisions = []
     }
   }
 })
 
 
 export default peopleDivisionSlice.reducer
-export const { addPeopleDivision, deletePeopleDivision, updatePeopleDivision } = peopleDivisionSlice.actions
+export const { addPeopleDivision, deletePeopleDivision, updatePeopleDivision, clearPeopleDivision } = peopleDivisionSlice.actions
 

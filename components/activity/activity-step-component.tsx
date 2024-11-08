@@ -10,6 +10,7 @@ import { UserAttrList } from "../rule/rule-builder"
 import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store"
 import { ActivityItem, addActivityItem, updateActivityItem } from "@/store/activity-config-slice"
+import ExtraConfigComponent from "./extra-config-component"
 
 export type ActivityStepComponentProps = {
   setIsOpen: (isOpen: boolean) => void
@@ -21,7 +22,7 @@ export default function ActivityStepComponent({ props }: {props: ActivityStepCom
   const dispatch = useDispatch()
   const peopleDivisions = useSelector((state: RootState) => state.peopleDivisionState.peopleDivisions)
   // 新增的用户划分
-  const newUserAttrList = peopleDivisions.map(item => ({ key: item.name, value: item.name }))
+  const newUserAttrList = peopleDivisions.map(item => ({ key: item.name, value: item.type }))
   // 状态
   const [actName, setActName] = useState(name || '')
   const [baseRuleState, setbaseRuleState] = useState<RuleGroup>(baseRule || { rule: [], logic: 'and' })
@@ -50,6 +51,10 @@ export default function ActivityStepComponent({ props }: {props: ActivityStepCom
       content: <ActConfig acts={baseAct} name="新增基本配置" setActs={setBaseAct}/>
     },
     {
+      title: 'xxxxx',
+      content: <ExtraConfigComponent/>
+    },
+    {
       title: '额外规则配置',
       content: <RuleGroupComponent
         group={extraRuleState}
@@ -59,15 +64,12 @@ export default function ActivityStepComponent({ props }: {props: ActivityStepCom
         userAttrList={[...UserAttrList, ...newUserAttrList]}
       />
     },
-    {
-      title: '额外活动配置',
-      content: <ActConfig acts={extraAct} name="新增额外配置" setActs={setExtraAct}/>
-    }
   ]
   const [current, setCurrent] = useState(0)
   const next = () => setCurrent(current + 1)
   const prev = () => setCurrent(current - 1)
   const handleSubmit = () => {
+    console.log('baseRuleState', baseRuleState)
     if (!actName) {
       return alertCtrl(setAlert, '请输入活动名称')
     }
@@ -101,7 +103,7 @@ export default function ActivityStepComponent({ props }: {props: ActivityStepCom
         )}
         {
           current === stepItems.length - 1 && (
-            name? <Button className="bg-zinc-700" onClick={() => dispatch(updateActivityItem({ name: actName, baseRule: baseRuleState, baseActItem: baseAct, extraRule: extraRuleState, extraActItem: extraAct }))}>更新</Button>:
+            name? <Button className="bg-zinc-700" onClick={() => {dispatch(updateActivityItem({ name: actName, baseRule: baseRuleState, baseActItem: baseAct, extraRule: extraRuleState, extraActItem: extraAct })); setIsOpen(false)}}>更新</Button>:
               <Button className="bg-zinc-700" onClick={handleSubmit}>提交</Button>
           )
         }

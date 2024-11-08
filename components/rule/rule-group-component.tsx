@@ -33,6 +33,7 @@ export const UserTypeList = [
 ]
 
 function RuleFormComponent({ rule, onChange, onDelete, userAttrList }: RuleFormProps) {
+  console.log('rule form compoent', userAttrList)
   const handleBasicRuleChange = (ruleValue: Partial<BaseRule>) => {
     onChange({ ...rule, ...ruleValue })
   }
@@ -96,7 +97,7 @@ export function RuleGroupComponent({ group, onChange, onDelete, level = 0, userA
   }
 
   return (
-    <div className="rule-group mb-4 p-4 border border-gray-400 rounded-lg bg-gray-100 relative" style={{ marginLeft: `${level * 20}px` }}>
+    <div className="mb-4 p-4 border border-gray-400 rounded-lg bg-gray-100 relative" style={{ marginLeft: `${level * 20}px` }}>
       <div className="mb-2 flex justify-start items-center">
         <Label className="mr-2 font-semibold">关联关系:</Label>
         <select value={group.logic} onChange={handleLogicChange} className="p-1 border border-gray-300 rounded text-sm">

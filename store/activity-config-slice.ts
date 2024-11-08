@@ -29,11 +29,14 @@ export const activityConfigSlice = createSlice({
     updateActivityItem: (state, action: PayloadAction<ActivityItem>) => {
       const index = state.activityItems.findIndex(item => item.name === action.payload.name)
       state.activityItems[index] = action.payload
+    },
+    clearActivityItem: (state) => {
+      state.activityItems = []
     }
   }
 })
 
 
 export default activityConfigSlice.reducer
-export const { addActivityItem, deleteActivityItem, updateActivityItem } = activityConfigSlice.actions
+export const { addActivityItem, deleteActivityItem, updateActivityItem, clearActivityItem } = activityConfigSlice.actions
 
