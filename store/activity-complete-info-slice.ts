@@ -24,8 +24,20 @@ export const ActivityCompleteInfoSlice = createSlice({
     addActivityCompleteInfo: (state, action: PayloadAction<ActivityCompleteInfo>) => {
       state.activityCompleteInfos.push(action.payload)
     },
+    deleteActivityCompleteInfo: (state, action: PayloadAction<number>) => {
+      state.activityCompleteInfos = state.activityCompleteInfos.filter((_, index) => index !== action.payload)
+    },
+    updateActivityCompleteInfo: (state, action: PayloadAction<ActivityCompleteInfo & {index: number}>) => {
+      state.activityCompleteInfos[action.payload.index] = {
+        name: action.payload.name,
+        startTime: action.payload.startTime,
+        endTime: action.payload.endTime,
+        peopleDivision: action.payload.peopleDivision,
+        activityItems: action.payload.activityItems
+      }
+    }
   }
 })
 
 export default ActivityCompleteInfoSlice.reducer
-export const { addActivityCompleteInfo } = ActivityCompleteInfoSlice.actions
+export const { addActivityCompleteInfo, deleteActivityCompleteInfo, updateActivityCompleteInfo } = ActivityCompleteInfoSlice.actions

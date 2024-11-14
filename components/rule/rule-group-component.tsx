@@ -1,6 +1,8 @@
 import { Label } from "@/components/ui/label"
 import { Plus, X } from "lucide-react"
 import { ComponentByUserType } from "@/components/rule/rule-components"
+import { useSelector } from "react-redux"
+import { RootState } from "@/store"
 export type RuleGroup = {
   logic: 'and' | 'or'
   rule: Rule[]
@@ -8,7 +10,7 @@ export type RuleGroup = {
 export type Rule = RuleGroup | BaseRule
 export type BaseRule = {
   key: string
-  operator: '==' | '!=' | '<' | '>' | 'in'
+  operator: '==' | '!=' | '<' | '>' | 'in' | '>=' | '<='
   value: any
 }
 type RuleGroupProps = {
@@ -25,15 +27,8 @@ type RuleFormProps = {
   userAttrList: { key: string, value: string }[]
 }
 
-export const UserTypeList = [
-  { key: '新客', value: 'new' },
-  { key: '续费', value: 'renew' },
-  { key: '其他', value: 'other' },
-  { key: '回访', value: 'revisit' }
-]
-
 function RuleFormComponent({ rule, onChange, onDelete, userAttrList }: RuleFormProps) {
-  console.log('rule form compoent', userAttrList)
+  const userTypeList = useSelector((state: RootState) => state.userTypeReducer.userTypeList)
   const handleBasicRuleChange = (ruleValue: Partial<BaseRule>) => {
     onChange({ ...rule, ...ruleValue })
   }
@@ -44,7 +39,7 @@ function RuleFormComponent({ rule, onChange, onDelete, userAttrList }: RuleFormP
         <select value={rule.key === 'user.type'? rule.value: rule.key} onChange={(e: any) => {
           let key = e.target.value
           let value = null
-          if (UserTypeList.map(item => item.value).includes(key)) {
+          if (userTypeList.map(item => item.value).includes(key)) {
             key = 'user.type'
             value = e.target.value
           }
@@ -75,7 +70,6 @@ export function RuleGroupComponent({ group, onChange, onDelete, level = 0, userA
   }
   const addRule = () => {
     const newRule: BaseRule = { key: userAttrList[0].value, operator: '==', value: null }
-    console.log('new rule', newRule)
     const updatedRules = [...group.rule, newRule]
     onChange({ logic: group.logic, rule: updatedRules })
   }

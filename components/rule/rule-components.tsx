@@ -4,8 +4,9 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { BaseRule } from "@/components/rule/rule-group-component"
+import { Input } from "@/components/ui/input"
 
-const operators: BaseRule['operator'][] = ['==', '!=', '<', '>', 'in']
+const operators: BaseRule['operator'][] = ['==', '!=', '<', '>', 'in', '>=', '<=']
 const platforms = [
   { label: 'PC网站', value: 'web' },
   { label: '安卓', value: 'android' },
@@ -81,7 +82,6 @@ type CheckboxComponentProps = {
 }
 
 export function CheckboxComponent({ defaultValue, items, onValueChange }: CheckboxComponentProps) {
-  console.log('defaultValue', defaultValue)
   const [selectedValue, setSelectedValue] = useState(defaultValue)
   useEffect(() => {
     setSelectedValue(defaultValue)
@@ -114,33 +114,36 @@ export function CheckboxComponent({ defaultValue, items, onValueChange }: Checkb
 type InputComponentProps = {
   operator: BaseRule['operator']
   handleBasicRuleChange: (_ruleValue: Partial<BaseRule>) => void
-  inputValue: string
+  inputValue: string,
+  placeholder?: string
 }
-export function InputComponent({ operator, handleBasicRuleChange, inputValue }: InputComponentProps) {
-  // const [inputValue, setInputValue] = useState('')
-  console.log('operator', operator)
-  // console.log('inputValue', inputValue)
+export function InputComponent({ operator, handleBasicRuleChange, inputValue, placeholder }: InputComponentProps) {
   useEffect(() => {
-    handleBasicRuleChange({ value: inputValue, operator: '==' })
+    handleBasicRuleChange({ value: inputValue, operator: operator })
   }, [])
   return (
     <>
-      <label className="mr-2 text-sm font-semibold">运算符</label>
-      <select value={operator} onChange={(e: any) => {handleBasicRuleChange({ operator: e.target.value })}} className="mr-2">
-        {operators.map((op) => (
-          <option key={op} value={op}>
-            {op}
-          </option>
-        ))}
-      </select>
-      <div>
-        <label className="mr-2 text-sm font-semibold">值</label>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={ (e: any) => { handleBasicRuleChange({ value: +e.target.value })} }
-          className="mr-2 p-1 border border-gray-300 rounded"
-        />
+      <div className="grid gap-2">
+        <div className="grid grid-cols-8 items-center">
+          <Label className="mr-2 text-sm font-semibold">运算符</Label>
+          <select value={operator} onChange={(e: any) => {handleBasicRuleChange({ operator: e.target.value })}} className="mr-2">
+            {operators.map((op) => (
+              <option key={op} value={op}>
+                {op}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="grid grid-cols-8 items-center">
+          <Label className="text-sm font-semibold">值</Label>
+          <Input
+            type="text"
+            value={inputValue}
+            onChange={ (e: any) => { handleBasicRuleChange({ value: e.target.value })} }
+            className="mr-2 p-1 border border-gray-300 rounded col-span-7 text-sm"
+            placeholder={placeholder}
+          />
+        </div>
       </div>
     </>
   )
@@ -164,11 +167,11 @@ type ComponentByUserTypeProps = {
   handleBasicRuleChange: (_ruleValue: Partial<BaseRule>) => void
 }
 export function ComponentByUserType({ userKey, inputValue, operator, handleBasicRuleChange }: ComponentByUserTypeProps) {
-  console.log('componentByUserType', userKey)
   if (userKey === 'user.wasVip') return <CheckboxComponent defaultValue={inputValue as string || '1'} items={[{ label: '是', value: '1' }, { label: '不是', value: '0' }]} onValueChange={(value) => handleBasicRuleChange({ value: value, operator: '==' })} />
   if (userKey === 'user.mpType') return <CheckboxComponent defaultValue={inputValue as string || 'weixin'} items={[{ label: '微信', value: 'weixin' }, { label: '百度', value: 'baidu' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '==' })} />
   if (userKey === 'user.systemOs') return <CheckboxComponent defaultValue={inputValue as string || 'android'} items={[{ label: '安卓', value: 'android' }, { label: '苹果', value: 'ios' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '==' })} />
   if (userKey === 'platform') return <SelectComponent defaultValue={inputValue || ''} items={platforms} handleBasicRuleChange={handleBasicRuleChange} operator={operator} />
   if (userKey === 'user.type') return <UserTypeComponent defaultValue={inputValue as string} handleBasicRuleChange={handleBasicRuleChange} />
+  if (userKey === 'user.userId') return <InputComponent operator='in' handleBasicRuleChange={handleBasicRuleChange} inputValue={inputValue as string} placeholder="使用英文分号隔开；左侧是用户id倒数第几位；右侧是用户所在的白名单；"/>
   return <InputComponent operator={operator} handleBasicRuleChange={handleBasicRuleChange} inputValue={inputValue as string} />
 }

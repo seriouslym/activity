@@ -4,7 +4,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 
 
 
-type ExtraConfig = {
+export type ExtraConfig = {
   extraRule: RuleGroup,
   extraActItem: ActProp[],
 }

@@ -58,7 +58,7 @@ function ActivityTableComponent({ data }: {data: ActivityItem[]}) {
                   <Button variant={'outline'}>编辑</Button>
                 </DialogTrigger>
                 <DialogContent className='min-w-[1000px]'>
-                  <ActivityStepComponent props={{ setIsOpen, ...activity }}/>
+                  <ActivityStepComponent props={{ setIsOpen, index, ...activity }}/>
                 </DialogContent>
               </Dialog>
               <Button variant={'destructive'} onClick={() => dispatch(deleteActivityItem(index))}>删除</Button>

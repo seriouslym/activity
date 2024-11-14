@@ -24,11 +24,14 @@ export const peopleDivisionSlice = createSlice({
     },
     clearPeopleDivision: (state) => {
       state.peopleDivisions = []
+    },
+    setPeopleDivision: (state, action: PayloadAction<PeoPleDivision[]>) => {
+      state.peopleDivisions = action.payload
     }
   }
 })
 
 
 export default peopleDivisionSlice.reducer
-export const { addPeopleDivision, deletePeopleDivision, updatePeopleDivision, clearPeopleDivision } = peopleDivisionSlice.actions
+export const { addPeopleDivision, deletePeopleDivision, updatePeopleDivision, clearPeopleDivision, setPeopleDivision } = peopleDivisionSlice.actions
 

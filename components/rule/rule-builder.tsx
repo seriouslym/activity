@@ -1,14 +1,15 @@
 'use client'
 import { useState } from "react"
 import { Controller, useForm } from "react-hook-form"
-import { RuleGroupComponent, UserTypeList, RuleGroup } from "@/components/rule/rule-group-component"
+import { RuleGroupComponent, RuleGroup } from "@/components/rule/rule-group-component"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { PeoPleDivision, addPeopleDivision, updatePeopleDivision } from "@/store/people-division-slice"
 import { Input } from "../ui/input"
+import { RootState } from "@/store"
 
 type UserAttrForm = {
   rule: RuleGroup
@@ -20,13 +21,16 @@ export const UserAttrList = [
   { key: '创建时间', value: 'user.createdTime' },
   { key: '平台', value: 'platform' },
   { key: '用户系统', value: 'user.systemOs' },
-  { key: '小程序类型', value: 'user.mpType' }
+  { key: '小程序类型', value: 'user.mpType' },
+  { key: '用户ID', value: 'user.userId' }
 ]
 
 export function RuleBuilderComponent({ setIsOpen, division }: {setIsOpen: (isOpen: boolean) => void, division?: PeoPleDivision}) {
   // const peopleDivisions = useSelector((state: RootState) => state.peopleDivisionState.peopleDivisions)
+  const userTypeList = useSelector((state: RootState) => state.userTypeReducer.userTypeList)
   const dispatch = useDispatch()
   const update = division? true: false
+  console.log('division gengxin', division)
   const initRule = division?.rule || { rule: [], logic: 'and' }
   const [rule, setRule] = useState<RuleGroup>(initRule)
   const [alert, setAlert] = useState(false)
@@ -39,7 +43,6 @@ export function RuleBuilderComponent({ setIsOpen, division }: {setIsOpen: (isOpe
     defaultValues: { rule, userType }
   })
   const onSubmit = ({ rule, userType }: UserAttrForm) => {
-    console.log(update, rule, userType)
     if (userType === '' || rule.rule.length === 0 ) {
       userType === '' && setAlertInfo('请选择用户类型')
       rule.rule.length === 0 && setAlertInfo('请添加规则')
@@ -49,7 +52,7 @@ export function RuleBuilderComponent({ setIsOpen, division }: {setIsOpen: (isOpe
       }, 2000)
       return
     }
-    const name = UserTypeList.findLast(item => item.value === userType)?.key as string
+    const name = userTypeList.findLast(item => item.value === userType)?.key as string
     const data = { name, rule, type: userType }
     update? dispatch(updatePeopleDivision(data)): dispatch(addPeopleDivision(data))
     setRule(initRule)
@@ -92,7 +95,7 @@ export function RuleBuilderComponent({ setIsOpen, division }: {setIsOpen: (isOpe
                         <SelectValue placeholder="用户类型"/>
                       </SelectTrigger>
                       <SelectContent>
-                        { UserTypeList.map(({ key, value }, index) => (
+                        { userTypeList.map(({ key, value }, index) => (
                           <SelectItem key={index} value={value}>{key}</SelectItem>
                         ))}
                       </SelectContent>
@@ -102,8 +105,8 @@ export function RuleBuilderComponent({ setIsOpen, division }: {setIsOpen: (isOpe
               }
               {
                 update? 
-                  <Button className='bg-zinc-700' type='submit'>更新类型</Button>: 
-                  <Button className='bg-zinc-700' type='submit'>新增类型</Button>
+                  <Button className='bg-zinc-700' type='submit'>更新</Button>: 
+                  <Button className='bg-zinc-700' type='submit'>提交</Button>
               }
 
             </div>

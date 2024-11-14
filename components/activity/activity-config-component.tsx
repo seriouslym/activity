@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger } from "../ui/dropdown-menu"
-import { Plus, Dot, X, Check } from "lucide-react"
+import { Plus, Dot, X } from "lucide-react"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 
@@ -27,6 +27,7 @@ const activityList: (activity)[] = [
   { label: '商品头部标签', key: 'overHeadTag' },
   { label: '折合价', key: 'titleByYear', },
   { label: '折合价单位', key: 'period', },
+  { label: '每天单价', key: 'unitPrice', },
   { label: '支付标签', key: 'buttonTag', },
   { label: '赠送天数', submenus: [
     { label: 'vip赠送天数', key: 'gift', },
@@ -44,8 +45,7 @@ const activityList: (activity)[] = [
 
 export default function ActConfig({ acts, name, setActs }: ActConfigProp){
   const handleInputChange = (index: number, value: string) => {
-    const newActs = [...acts]
-    newActs[index].value = value
+    const newActs = acts.map((act, i) => (i === index? { ...act, value } : act))
     setActs(newActs)
   }
 
@@ -85,7 +85,7 @@ export default function ActConfig({ acts, name, setActs }: ActConfigProp){
                 { item.key === 'productId' ? (
                   <Input className='w-48 border border-black' value={item.value} disabled ></Input>
                 ): (
-                  <Input className='w-48 border border-black ' placeholder="请配置活动元素的值" value={item.value} onChange={(e: any) => {handleInputChange(index, e.target.value)}}required></Input>
+                  <Input className='w-48 border border-black ' placeholder="请配置活动元素的值" value={item.value} onChange={(e: any) => {handleInputChange(index, e.target.value)}} required></Input>
                 )}
                 <button className='absolute right-0 top-1 text-zinc-500' type='button' onClick={() => handleDeleteActConfig(index)}>
                   <X size={20}/>
@@ -96,14 +96,14 @@ export default function ActConfig({ acts, name, setActs }: ActConfigProp){
         }
             
       </ul>
-      {
+      {/* {
         acts.length !== 0 && 
         <div className="flex justify-end mr-4 mb-4">
           <button className="">
             <Check size={16} />
           </button>
         </div>
-      }
+      } */}
     </div>
   </div>
   

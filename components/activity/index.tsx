@@ -8,13 +8,12 @@ import { Label } from "../ui/label"
 import { Button } from "../ui/button"
 import { Alert, AlertDescription, AlertTitle } from "../ui/alert"
 import { useState } from "react"
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "../ui/dialog"
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons"
 import { Input } from "../ui/input"
 import { useForm } from "react-hook-form"
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from "zod"
-import { addActivityCompleteInfo } from "@/store/activity-complete-info-slice"
+import { addActivityCompleteInfo, updateActivityCompleteInfo } from "@/store/activity-complete-info-slice"
 import { clearActivityItem } from "@/store/activity-config-slice"
 import { clearPeopleDivision } from "@/store/people-division-slice"
 
@@ -27,19 +26,30 @@ const ActivityBasicInfoFormSchema = z.object({
 })
 type FormValues = z.infer<typeof ActivityBasicInfoFormSchema>
 
-export default function Activity({ setIsOpen }: {setIsOpen: (isOpen: boolean) => void}) {
-  const peopleDivisionState = useSelector((state: RootState) => state.peopleDivisionState.peopleDivisions)
-  const activityItems = useSelector((state: RootState) => state.activityConfigState.activityItems)
+type ActivityProps = {
+  setIsOpen: (isOpen: boolean) => void
+  index?: number,
+  name?: string,
+  startTime?: string,
+  endTime?: string
+}
+
+export default function Activity(props: ActivityProps) {
+  const { setIsOpen, index } = props
   const dispath = useDispatch()
+  const peopleDivisionState = useSelector((state: RootState) => state.peopleDivisionState.peopleDivisions)
+  // 新增活动这里应该是没有数据的
+  const activityItems = useSelector((state: RootState) => state.activityConfigState.activityItems)
   const [alert, setAlert] = useState(false)
-  const [open, setOpen] = useState(false)
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(ActivityBasicInfoFormSchema)
   })
-  // const router = useRouter()
-
-  const onActivityBasicInfosubmit = (data: FormValues) => {
-    console.log('huodong xinixn', data)
+  const onActivitySubmit = (data: FormValues) => {
+    if (!activityItems.length) {
+      setAlert(true)
+      setTimeout(() => setAlert(false), 2000)
+      return
+    }
     dispath(addActivityCompleteInfo({
       peopleDivision: peopleDivisionState,
       activityItems: activityItems,
@@ -47,16 +57,24 @@ export default function Activity({ setIsOpen }: {setIsOpen: (isOpen: boolean) =>
     }))
     dispath(clearActivityItem())
     dispath(clearPeopleDivision())
-    setOpen(false)
     setIsOpen(false)
   }
-  const handleSaveActivity = () => {
+
+  const onActivitySave = (data: FormValues) => {
     if (!activityItems.length) {
       setAlert(true)
       setTimeout(() => setAlert(false), 2000)
       return
     }
-    setOpen(true)
+    dispath(updateActivityCompleteInfo({
+      index: index as number,
+      peopleDivision: peopleDivisionState,
+      activityItems: activityItems,
+      ...data
+    }))
+    dispath(clearActivityItem())
+    dispath(clearPeopleDivision())
+    setIsOpen(false)
   }
   return <>
     {/* <div className="flex flex-col justify-center items-center"> */}
@@ -83,13 +101,41 @@ export default function Activity({ setIsOpen }: {setIsOpen: (isOpen: boolean) =>
               </Alert>: <></>
             }
           </div>
+          <div className="flex flex-col space-y-4">
+            <Label>3、活动基本信息</Label>
+            <form onSubmit={index===undefined? handleSubmit(onActivitySubmit): handleSubmit(onActivitySave)}>
+              <div className="grid gap-4">
+                <div className="grid grid-cols-6 items-center gap-4">
+                  <Label>名称</Label>
+                  <Input placeholder="10月活动" className="col-span-4" defaultValue={props.name} {...register('name')}
+                  />
+                  {errors.name && <p className="text-red-500 text-sm col-span-4 ">{errors.name.message}</p>}
+                </div>
+                <div className="grid grid-cols-6 items-center gap-4">
+                  <Label>开始时间</Label>
+                  <Input placeholder="按如下格式填写 2024-09-01 12:00:00" className="col-span-4" {...register('startTime')} defaultValue={props.startTime}/>
+                  {errors.startTime && <p className="text-red-500 text-sm col-span-4">{errors.startTime.message}</p>}
+                </div>
+                <div className="grid grid-cols-6 items-center gap-4">
+                  <Label>结束时间</Label>
+                  <Input placeholder="按如下格式填写 2024-09-12 12:00:00" className="col-span-4" {...register('endTime')} defaultValue={props.endTime}/>
+                  {errors.endTime && <p className="text-red-500 text-sm col-span-4 ">{errors.endTime.message}</p>}
+                </div>
+              </div>
+              <div className="flex justify-end pt-4">
+                {
+                  index === undefined? <Button type="submit">提交</Button> : <Button type="submit">更新</Button>
+                }
+              </div>
+            </form>
+          </div>
             
         </div>
-        <div className="flex justify-end pt-4">
-          <Dialog open={open} onOpenChange={setOpen}>
-            <Button onClick={handleSaveActivity}>提交</Button>
+        {/* <div className="flex justify-end pt-4"> */}
+        {/* <Button type="submit">提交</Button> */}
+        {/* <Dialog open={open} onOpenChange={setOpen}>
             <DialogContent className="sm:max-w-[425px]">
-              <form onSubmit={handleSubmit(onActivityBasicInfosubmit)}>
+              <form onSubmit={handleSubmit(onActivityBasicInfoSubmit)}>
                 <DialogHeader>
                   <DialogTitle>编辑活动基本信息</DialogTitle>
                 </DialogHeader>
@@ -123,8 +169,8 @@ export default function Activity({ setIsOpen }: {setIsOpen: (isOpen: boolean) =>
                 </DialogFooter>
               </form>
             </DialogContent>
-          </Dialog>
-        </div>
+          </Dialog> */}
+        {/* </div> */}
       </CardContent>
     </Card>
     {/* </div> */}

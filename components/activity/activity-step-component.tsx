@@ -11,14 +11,14 @@ import { useDispatch, useSelector } from "react-redux"
 import { RootState } from "@/store"
 import { ActivityItem, addActivityItem, updateActivityItem } from "@/store/activity-config-slice"
 import ExtraConfigComponent from "./extra-config-component"
+import { ExtraConfig } from "@/store/extra-config-slice"
 
 export type ActivityStepComponentProps = {
   setIsOpen: (isOpen: boolean) => void
-} & Partial<ActivityItem>
+} & Partial<ActivityItem> & { index?: number }
 
 export default function ActivityStepComponent({ props }: {props: ActivityStepComponentProps}) {
-  const { setIsOpen, name, baseRule, baseActItem, extraRule, extraActItem } = props
-  console.log(setIsOpen, name, baseRule, baseActItem, extraRule, extraActItem)
+  const { setIsOpen, name, baseRule, baseActItem, extraConfigs } = props
   const dispatch = useDispatch()
   const peopleDivisions = useSelector((state: RootState) => state.peopleDivisionState.peopleDivisions)
   // 新增的用户划分
@@ -27,8 +27,7 @@ export default function ActivityStepComponent({ props }: {props: ActivityStepCom
   const [actName, setActName] = useState(name || '')
   const [baseRuleState, setbaseRuleState] = useState<RuleGroup>(baseRule || { rule: [], logic: 'and' })
   const [baseAct, setBaseAct] = useState<ActProp[]>(baseActItem || [])
-  const [extraRuleState, setExtraRuleState] = useState<RuleGroup>(extraRule || { rule: [], logic: 'and' })
-  const [extraAct, setExtraAct] = useState<ActProp[]>(extraActItem || [])
+  const [extraConfigsState, setExtraConfigsState] = useState<ExtraConfig[]>(extraConfigs || [])
   // 提示
   const [alert, setAlert] = useState({ show: false, message: '' })
   const stepItems = [
@@ -51,35 +50,27 @@ export default function ActivityStepComponent({ props }: {props: ActivityStepCom
       content: <ActConfig acts={baseAct} name="新增基本配置" setActs={setBaseAct}/>
     },
     {
-      title: 'xxxxx',
-      content: <ExtraConfigComponent/>
-    },
-    {
       title: '额外规则配置',
-      content: <RuleGroupComponent
-        group={extraRuleState}
-        onChange={(updatedRule) => {
-          setExtraRuleState(updatedRule)
-        }}
-        userAttrList={[...UserAttrList, ...newUserAttrList]}
-      />
+      content: <ExtraConfigComponent extraConfigsState={extraConfigsState} setExtraConfigsState={setExtraConfigsState}/>
     },
   ]
   const [current, setCurrent] = useState(0)
   const next = () => setCurrent(current + 1)
   const prev = () => setCurrent(current - 1)
   const handleSubmit = () => {
-    console.log('baseRuleState', baseRuleState)
     if (!actName) {
       return alertCtrl(setAlert, '请输入活动名称')
     }
     if (!checkRuleGroup(baseRuleState)) {
       return alertCtrl(setAlert, '请完善规则配置')
     }
-    if (!checkActConfig(baseAct)) {
+    if (!checkActConfig(baseAct)) { 
       return alertCtrl(setAlert, '请完善活动配置')
     }
-    dispatch(addActivityItem({ name: actName, baseRule: baseRuleState, baseActItem: baseAct, extraRule: extraRuleState, extraActItem: extraAct }))
+    if (!checkExtraConfig(extraConfigsState)) {
+      return alertCtrl(setAlert, '请完善额外配置')
+    }
+    dispatch(addActivityItem({ name: actName, baseRule: baseRuleState, baseActItem: baseAct, extraConfigs: extraConfigsState }))
     setIsOpen(false)
   }
   return <div className="px-16 py-16 space-y-4">
@@ -103,7 +94,7 @@ export default function ActivityStepComponent({ props }: {props: ActivityStepCom
         )}
         {
           current === stepItems.length - 1 && (
-            name? <Button className="bg-zinc-700" onClick={() => {dispatch(updateActivityItem({ name: actName, baseRule: baseRuleState, baseActItem: baseAct, extraRule: extraRuleState, extraActItem: extraAct })); setIsOpen(false)}}>更新</Button>:
+            name? <Button className="bg-zinc-700" onClick={() => {dispatch(updateActivityItem({ name: actName, baseRule: baseRuleState, baseActItem: baseAct, extraConfigs: extraConfigsState, index: props.index as number })); setIsOpen(false)}}>更新</Button>:
               <Button className="bg-zinc-700" onClick={handleSubmit}>提交</Button>
           )
         }
@@ -122,7 +113,6 @@ const alertCtrl = (setAlert: Function, message: string) => {
 }
 
 const checkRuleGroup = (ruleGroup: RuleGroup): boolean => {
-  console.log(ruleGroup)
   if (ruleGroup.rule.length === 0) {
     return false
   }
@@ -142,6 +132,19 @@ const checkActConfig = (acts: ActProp[]): boolean => {
   if (acts.length === 0) return false
   for (let act of acts) {
     if (act.value === undefined || act.value === '') {
+      return false
+    }
+  }
+  return true
+}
+
+const checkExtraConfig = (extraConfigs: ExtraConfig[]): boolean => {
+  if (extraConfigs.length === 0) return true // 可以没有额外配置
+  for (let extraConfig of extraConfigs) {
+    if (!checkRuleGroup(extraConfig.extraRule)) {
+      return false
+    }
+    if (!checkActConfig(extraConfig.extraActItem)) {
       return false
     }
   }

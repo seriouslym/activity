@@ -6,13 +6,13 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { RuleGroup } from "@/components/rule/rule-group-component"
 import { ActProp } from "@/components/activity/activity-config-component"
+import { ExtraConfig } from "./extra-config-slice"
 
 export type ActivityItem = {
   name: string, // 活动名称
   baseRule: RuleGroup, // renew
   baseActItem: ActProp[],
-  extraRule: RuleGroup,
-  extraActItem: ActProp[],
+  extraConfigs: ExtraConfig[]
 }
 export const activityConfigSlice = createSlice({
   name: "activityConfigSlice",
@@ -26,17 +26,24 @@ export const activityConfigSlice = createSlice({
     deleteActivityItem: (state, action: PayloadAction<number>) => {
       state.activityItems = state.activityItems.filter((_, index) => index !== action.payload)
     },
-    updateActivityItem: (state, action: PayloadAction<ActivityItem>) => {
-      const index = state.activityItems.findIndex(item => item.name === action.payload.name)
-      state.activityItems[index] = action.payload
+    updateActivityItem: (state, action: PayloadAction<ActivityItem & {index: number}>) => {
+      state.activityItems[action.payload.index] = {
+        name: action.payload.name,
+        baseRule: action.payload.baseRule,
+        baseActItem: action.payload.baseActItem,
+        extraConfigs: action.payload.extraConfigs
+      }
     },
     clearActivityItem: (state) => {
       state.activityItems = []
+    }, 
+    setActivityItem: (state, action: PayloadAction<ActivityItem[]>) => {
+      state.activityItems = action.payload
     }
   }
 })
 
 
 export default activityConfigSlice.reducer
-export const { addActivityItem, deleteActivityItem, updateActivityItem, clearActivityItem } = activityConfigSlice.actions
+export const { addActivityItem, deleteActivityItem, updateActivityItem, clearActivityItem, setActivityItem } = activityConfigSlice.actions
 
