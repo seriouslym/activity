@@ -22,7 +22,8 @@ export const UserAttrList = [
   { key: '平台', value: 'platform' },
   { key: '用户系统', value: 'user.systemOs' },
   { key: '小程序类型', value: 'user.mpType' },
-  { key: '用户ID', value: 'user.userId' }
+  { key: '用户ID', value: 'user.userId' },
+  { key: '用户vip类型', value: 'type' }
 ]
 
 export function RuleBuilderComponent({ setIsOpen, division }: {setIsOpen: (isOpen: boolean) => void, division?: PeoPleDivision}) {

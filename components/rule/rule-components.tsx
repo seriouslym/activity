@@ -173,5 +173,6 @@ export function ComponentByUserType({ userKey, inputValue, operator, handleBasic
   if (userKey === 'platform') return <SelectComponent defaultValue={inputValue || ''} items={platforms} handleBasicRuleChange={handleBasicRuleChange} operator={operator} />
   if (userKey === 'user.type') return <UserTypeComponent defaultValue={inputValue as string} handleBasicRuleChange={handleBasicRuleChange} />
   if (userKey === 'user.userId') return <InputComponent operator='in' handleBasicRuleChange={handleBasicRuleChange} inputValue={inputValue as string} placeholder="使用英文分号隔开；左侧是用户id倒数第几位；右侧是用户所在的白名单；"/>
+  if (userKey = 'type') return <CheckboxComponent defaultValue={inputValue as string || 'vip'} items={[{ label: 'vip', value: 'vip' }, { label: 'svip', value: 'svip' }, { label: 'teamVip', value: 'teamVip' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '==' })} />
   return <InputComponent operator={operator} handleBasicRuleChange={handleBasicRuleChange} inputValue={inputValue as string} />
 }

@@ -16,6 +16,7 @@ import { z } from "zod"
 import { addActivityCompleteInfo, updateActivityCompleteInfo } from "@/store/activity-complete-info-slice"
 import { clearActivityItem } from "@/store/activity-config-slice"
 import { clearPeopleDivision } from "@/store/people-division-slice"
+import ProductSortComponent from "./product-sort-component"
 
 const ActivityBasicInfoFormSchema = z.object({
   name: z.string({
@@ -101,8 +102,14 @@ export default function Activity(props: ActivityProps) {
               </Alert>: <></>
             }
           </div>
+          
           <div className="flex flex-col space-y-4">
-            <Label>3、活动基本信息</Label>
+            <Label>3、商品排序</Label>
+            <ProductSortComponent/>
+          </div>
+
+          <div className="flex flex-col space-y-4">
+            <Label>5、活动基本信息</Label>
             <form onSubmit={index===undefined? handleSubmit(onActivitySubmit): handleSubmit(onActivitySave)}>
               <div className="grid gap-4">
                 <div className="grid grid-cols-6 items-center gap-4">
