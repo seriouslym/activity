@@ -112,7 +112,7 @@ const alertCtrl = (setAlert: Function, message: string) => {
   }, 2000)
 }
 
-const checkRuleGroup = (ruleGroup: RuleGroup): boolean => {
+export const checkRuleGroup = (ruleGroup: RuleGroup): boolean => {
   if (ruleGroup.rule.length === 0) {
     return false
   }

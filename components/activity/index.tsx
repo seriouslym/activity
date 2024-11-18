@@ -17,6 +17,7 @@ import { addActivityCompleteInfo, updateActivityCompleteInfo } from "@/store/act
 import { clearActivityItem } from "@/store/activity-config-slice"
 import { clearPeopleDivision } from "@/store/people-division-slice"
 import ProductSortComponent from "./product-sort-component"
+import DefaultSelectComponent from "./default-select-component"
 
 const ActivityBasicInfoFormSchema = z.object({
   name: z.string({
@@ -106,6 +107,11 @@ export default function Activity(props: ActivityProps) {
           <div className="flex flex-col space-y-4">
             <Label>3、商品排序</Label>
             <ProductSortComponent/>
+          </div>
+
+          <div className="flex flex-col space-y-4">
+            <Label>4、默认选中</Label>
+            <DefaultSelectComponent/>
           </div>
 
           <div className="flex flex-col space-y-4">

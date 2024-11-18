@@ -27,10 +27,13 @@ export const productSortSlice = createSlice({
     updateDefaultSortSort: (state, action: PayloadAction<SortProductType[]>) => {
       state.sortConfig.defaultSort = action.payload
     },
+    updateExtraSort: (state, action: PayloadAction<ExtraSortConfig[]>) => {
+      state.sortConfig.extraSort = action.payload
+    }
   }
 })
 
 
 export default productSortSlice.reducer
-export const { updateDefaultSortSort } = productSortSlice.actions
+export const { updateDefaultSortSort, updateExtraSort } = productSortSlice.actions
 
