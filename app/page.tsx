@@ -89,7 +89,7 @@ const ActivitiesTableComponent = () => {
                     </DialogContent>
                   </Dialog>
                   <Button variant='outline' onClick={() => deleteActivity(index)}>删除</Button>
-                  <Button variant='destructive'>上线</Button>
+                  <Button variant='destructive'>发布</Button>
                 </TableCell>
               </TableRow>
             )): <TableRow>

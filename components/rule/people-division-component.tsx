@@ -86,7 +86,7 @@ export default function PeopleDivisionComponent() {
         <div className="flex justify-start space-x-8">
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button>新增划分</Button>
+              <Button>新增</Button>
             </DialogTrigger >
             <DialogContent className=' min-w-[700px]'>
               <RuleBuilderComponent setIsOpen={setIsOpen}/>

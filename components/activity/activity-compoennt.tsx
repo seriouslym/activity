@@ -15,7 +15,7 @@ export default function ActivityComponent() {
       <div className="space-y-2">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button>活动细则</Button>
+            <Button>新增</Button>
           </DialogTrigger >
           <DialogContent className='min-w-[1000px]'>
             <ActivityStepComponent props={{ setIsOpen }}/>
@@ -38,6 +38,7 @@ export default function ActivityComponent() {
 function ActivityTableComponent({ data }: {data: ActivityItem[]}) {
   const dispatch = useDispatch()
   const [isOpen, setIsOpen] = useState(false)
+  const [selectedAct, setSelectedAct] = useState<ActivityItem>()
   return (
     <Table className='table-fixed'>
       <TableHeader>
@@ -55,10 +56,10 @@ function ActivityTableComponent({ data }: {data: ActivityItem[]}) {
             <TableCell className='space-x-2'>
               <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogTrigger asChild>
-                  <Button variant={'outline'}>编辑</Button>
+                  <Button variant={'outline'} onClick={() => {setSelectedAct(activity); setIsOpen(true)}}>编辑</Button>
                 </DialogTrigger>
                 <DialogContent className='min-w-[1000px]'>
-                  <ActivityStepComponent props={{ setIsOpen, index, ...activity }}/>
+                  <ActivityStepComponent props={{ setIsOpen, index, ...selectedAct }}/>
                 </DialogContent>
               </Dialog>
               <Button variant={'destructive'} onClick={() => dispatch(deleteActivityItem(index))}>删除</Button>

@@ -42,11 +42,18 @@ export default function Activity(props: ActivityProps) {
   const peopleDivisionState = useSelector((state: RootState) => state.peopleDivisionState.peopleDivisions)
   // 新增活动这里应该是没有数据的
   const activityItems = useSelector((state: RootState) => state.activityConfigState.activityItems)
+
+  const defaultSelect = useSelector((state: RootState) => state.defaultSelectReducer.defaultSelectSlice)
+  const productSort = useSelector((state: RootState) => state.productSortReducer.sortConfig)
   const [alert, setAlert] = useState(false)
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
     resolver: zodResolver(ActivityBasicInfoFormSchema)
   })
   const onActivitySubmit = (data: FormValues) => {
+    console.log('activityItems', activityItems)
+    console.log('peopleDivisionState', peopleDivisionState)
+    console.log('defaultSelect', defaultSelect)
+    console.log('productSort', productSort)
     if (!activityItems.length) {
       setAlert(true)
       setTimeout(() => setAlert(false), 2000)
@@ -55,6 +62,8 @@ export default function Activity(props: ActivityProps) {
     dispath(addActivityCompleteInfo({
       peopleDivision: peopleDivisionState,
       activityItems: activityItems,
+      defaultSelect,
+      productSort,
       ...data
     }))
     dispath(clearActivityItem())
@@ -72,6 +81,8 @@ export default function Activity(props: ActivityProps) {
       index: index as number,
       peopleDivision: peopleDivisionState,
       activityItems: activityItems,
+      defaultSelect: defaultSelect,
+      productSort: productSort,
       ...data
     }))
     dispath(clearActivityItem())
@@ -105,14 +116,14 @@ export default function Activity(props: ActivityProps) {
           </div>
           
           <div className="flex flex-col space-y-4">
-            <Label>3、商品排序</Label>
+            <Label>3、默认选中</Label>
+            <DefaultSelectComponent/>
+          </div>
+          <div className="flex flex-col space-y-4">
+            <Label>4、商品排序</Label>
             <ProductSortComponent/>
           </div>
 
-          <div className="flex flex-col space-y-4">
-            <Label>4、默认选中</Label>
-            <DefaultSelectComponent/>
-          </div>
 
           <div className="flex flex-col space-y-4">
             <Label>5、活动基本信息</Label>

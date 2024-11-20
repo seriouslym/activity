@@ -5,13 +5,17 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit"
 import { PeoPleDivision } from "./people-division-slice"
 import { ActivityItem } from "./activity-config-slice"
+import { DefaultSelectType } from "./default-select-slice"
+import { SortConfig } from "./product-sort-slice"
 
 type ActivityCompleteInfo = {
   name: string, // 11月活动
   startTime: string, // 2024-09-01 12:00:00
   endTime: string, // 2024-09-12 12:00:00
   peopleDivision: PeoPleDivision[], // 人群划分配置
-  activityItems: ActivityItem[], // 活动配置
+  activityItems: ActivityItem[], // 活动配置,
+  defaultSelect: DefaultSelectType[], // 默认选择
+  productSort: SortConfig, // 商品排序
 }
 
 
@@ -33,7 +37,9 @@ export const ActivityCompleteInfoSlice = createSlice({
         startTime: action.payload.startTime,
         endTime: action.payload.endTime,
         peopleDivision: action.payload.peopleDivision,
-        activityItems: action.payload.activityItems
+        activityItems: action.payload.activityItems,
+        defaultSelect: action.payload.defaultSelect,
+        productSort: action.payload.productSort
       }
     }
   }

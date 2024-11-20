@@ -9,7 +9,7 @@ import {
 } from "@dnd-kit/sortable"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import * as React from "react"
-import { forwardRef, useImperativeHandle, useRef, useState } from "react"
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react"
 import { Dialog, DialogContent, DialogTrigger } from "../ui/dialog"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
@@ -31,7 +31,7 @@ export type SortProductType = {
     name: string;
 }
 
-const DraggableListNode = ({ props, index }: {props:SortProductType, index: number}) => {
+const DraggableListNode = ({ props, index, handleDeleteProduct }: {props:SortProductType, index: number, handleDeleteProduct: (index: number) => void}) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: props.id,
   })
@@ -42,10 +42,13 @@ const DraggableListNode = ({ props, index }: {props:SortProductType, index: numb
   }
   return (
     <>
-      <div className="grid grid-cols-12 items-center">
+      <div className="grid grid-cols-12">
         <div className="col-span-6 flex items-center space-x-4">
-          <Label className="text-gray-400">{index}</Label>
-          <Input ref={setNodeRef} value={props.name} {...attributes} {...listeners} style={style} className=""/>
+          <Label className="text-gray-400">{index+1}</Label>
+          <div className="flex justify-start items-center relative" ref={setNodeRef} {...attributes}  style={style}  >
+            <Input value={props.name} className="pr-8" {...listeners}/>
+            <X size={16} className="absolute right-2 " onClick={() => handleDeleteProduct(index)}/>
+          </div>
         </div>
       </div>
     </>
@@ -71,13 +74,13 @@ export default ProductSortComponent
 
 
 
-const SortComponent = ({ data, onSortChange }: {data: SortProductType[], onSortChange: (sortConfig: SortProductType[]) => void}) => {
+export const SortComponent = ({ data, onSortChange, handleDeleteProduct }: {data: SortProductType[], onSortChange: (sortConfig: SortProductType[]) => void, handleDeleteProduct: (index: number) => void})  => {
   const [items, setItems] = useState(data)
+  useEffect(() => {
+    setItems(data)
+  }, [data])
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    console.log(active)
-    console.log(over)
     if (active.id !== over?.id) {
-      console.log("active", active.id)
       const activeIndex = items.findIndex((i) => i.id === active.id)
       const overIndex = items.findIndex((i) => i.id === over?.id)
       const newlist = arrayMove(items, activeIndex, overIndex)
@@ -92,7 +95,7 @@ const SortComponent = ({ data, onSortChange }: {data: SortProductType[], onSortC
         strategy={verticalListSortingStrategy}
       >
         {items.map((item: SortProductType, index) => (
-          <DraggableListNode key={item.id} props={item} index={index+1}/>
+          <DraggableListNode key={item.id} props={item} index={index} handleDeleteProduct={handleDeleteProduct}/>
         ))}
       </SortableContext>
     </DndContext>
@@ -106,7 +109,14 @@ const SortStepComponent = ({ props, closeDialogCb }: {props: Omit<SortConfig, 'n
   const steps = [
     {
       title: '默认排序',
-      content: <SortComponent data={props.defaultSort} onSortChange={(sortConfig: SortProductType[]) => dispatch(updateDefaultSortSort(sortConfig))}/>
+      content: <SortComponent 
+        data={props.defaultSort} 
+        onSortChange={(sortConfig: SortProductType[]) => dispatch(updateDefaultSortSort(sortConfig))}
+        handleDeleteProduct={(index: number) => {
+          const newSort = props.defaultSort.filter((_, i) => i !== index)
+          dispatch(updateDefaultSortSort(newSort))
+        }}
+      />
     },
     {
       title: '自定义排序',
@@ -232,7 +242,21 @@ const UserDefinedSortComponent = forwardRef(({ data }: {data: Pick<SortConfig, '
                     />
                   </div>
                 </div>
-                <SortComponent data={config.extraSort} onSortChange={(sortConfig: SortProductType[]) => updateSort(sortConfig, index)}/> 
+                <SortComponent 
+                  data={config.extraSort} 
+                  onSortChange={(sortConfig: SortProductType[]) => updateSort(sortConfig, index)}
+                  handleDeleteProduct={(idx: number) => {
+                    setExtraSortConfig(extraSortConfig.map((config, i) => {
+                      if (i === index) {
+                        return {
+                          ...config,
+                          extraSort: config.extraSort.filter((_, j) => j !== idx)
+                        }
+                      }
+                      return config
+                    }))
+                  }}
+                /> 
               </div>
             </div>
           </>
@@ -272,7 +296,6 @@ function SortTableComponent() {
                 <SortStepComponent props={sortConfig} closeDialogCb={setIsOpen}/>
               </DialogContent>
             </Dialog>
-            <Button variant={'destructive'} onClick={() => console.log(sortConfig)}>删除</Button>
           </TableCell>
         </TableRow>
       </TableBody>

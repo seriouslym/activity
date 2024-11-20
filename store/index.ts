@@ -4,6 +4,7 @@ import activityCompleteInfoReducer from "@/store/activity-complete-info-slice"
 import extraConfigReducer from "@/store/extra-config-slice"
 import userTypeReducer from "@/store/user-type-slice"
 import productSortReducer from "@/store/product-sort-slice"
+import defaultSelectReducer from "@/store/default-select-slice"
 import { configureStore } from "@reduxjs/toolkit"
 
 export const store = configureStore({
@@ -13,7 +14,8 @@ export const store = configureStore({
     activityCompleteInfoState: activityCompleteInfoReducer,
     extraConfigReducer,
     userTypeReducer,
-    productSortReducer
+    productSortReducer,
+    defaultSelectReducer
   }
 })
 
