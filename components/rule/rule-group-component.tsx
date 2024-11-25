@@ -10,7 +10,7 @@ export type RuleGroup = {
 export type Rule = RuleGroup | BaseRule
 export type BaseRule = {
   key: string
-  operator: '==' | '!=' | '<' | '>' | 'in' | '>=' | '<='
+  operator: '=' | '!=' | '<' | '>' | 'in' | '>=' | '<='
   value: any
 }
 type RuleGroupProps = {
@@ -69,7 +69,7 @@ export function RuleGroupComponent({ group, onChange, onDelete, level = 0, userA
     onChange({ logic: e.target.value, rule: group.rule })
   }
   const addRule = () => {
-    const newRule: BaseRule = { key: userAttrList[0].value, operator: '==', value: null }
+    const newRule: BaseRule = { key: userAttrList[0].value, operator: '=', value: null }
     const updatedRules = [...group.rule, newRule]
     onChange({ logic: group.logic, rule: updatedRules })
   }

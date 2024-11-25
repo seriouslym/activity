@@ -17,14 +17,15 @@ type UserAttrForm = {
 }
 
 export const UserAttrList = [
-  { key: '是否是VIP', value: 'user.wasVip' },
+  { key: '买过VIP', value: 'user.wasVip' },
   { key: '创建时间', value: 'user.createdTime' },
   { key: '平台', value: 'platform' },
   { key: '用户系统', value: 'user.systemOs' },
   { key: '小程序类型', value: 'user.mpType' },
   { key: '用户ID', value: 'user.userId' },
   { key: '用户vip类型', value: 'type' },
-  { key: '来源', value: 'origin' }
+  { key: '来源', value: 'origin' },
+  { key: '不分人群', value: 'user' }
 ]
 
 export function RuleBuilderComponent({ setIsOpen, division }: {setIsOpen: (isOpen: boolean) => void, division?: PeoPleDivision}) {

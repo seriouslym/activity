@@ -1,6 +1,6 @@
 import peopleDivisionSliceReducer from "@/store/people-division-slice"
 import activityConfigSliceReducer from "@/store/activity-config-slice"
-import activityCompleteInfoReducer from "@/store/activity-complete-info-slice"
+import activityCompleteInfoReducer, { fetchActivityCompleteInfo } from "@/store/activity-complete-info-slice"
 import extraConfigReducer from "@/store/extra-config-slice"
 import userTypeReducer from "@/store/user-type-slice"
 import productSortReducer from "@/store/product-sort-slice"
@@ -19,6 +19,7 @@ export const store = configureStore({
   }
 })
 
+store.dispatch(fetchActivityCompleteInfo())
 export default store
 export type RootState = ReturnType<typeof store.getState>
 

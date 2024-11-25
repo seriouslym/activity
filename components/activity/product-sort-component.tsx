@@ -128,7 +128,6 @@ const SortStepComponent = ({ props, closeDialogCb }: {props: Omit<SortConfig, 'n
   const prev = () => setCurrent(current - 1)
   const handleSortSubmit = () => {
     const uds = userDefinedSortRef.current?.getExtraSortConfig()
-    console.log('uds', uds)
     if (uds === undefined || uds.length === 0) {
       dispatch(updateExtraSort([]))
       closeDialogCb(false)

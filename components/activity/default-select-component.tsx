@@ -14,6 +14,7 @@ import { checkRuleGroup } from "./activity-step-component"
 import React from "react"
 import { cn } from "@/lib/utils"
 import { Input } from "../ui/input"
+import { productIDS } from "./activity-config-component"
 
 export default function DefaultSelectComponent() {
   const [isOpen, setIsOpen] = useState(false)
@@ -89,6 +90,9 @@ const DefaultSelectDialogComponent = (props: DefaultSelectDialogComponentProps) 
   const [selectProduct, setSelectProduct] = useState<SortProductType[]>(props.selectProduct || [])
   const [name, setName] = useState(props.name || '')
   const [alert, setAlert] = useState('')
+  const peopleDivisions = useSelector((state: RootState) => state.peopleDivisionState.peopleDivisions)
+  // 新增的用户划分
+  const newUserAttrList = peopleDivisions.map(item => ({ key: item.name, value: item.type }))
   const dispath = useDispatch()
   const handleAddProduct = (product: SortProductType) => {
     if (selectProduct.some(p => p.id === product.id)) {
@@ -131,7 +135,7 @@ const DefaultSelectDialogComponent = (props: DefaultSelectDialogComponentProps) 
       <div className="flex w-[70%]">
         <Dot size={32}/>
         <div className="flex-1">
-          <RuleGroupComponent group={rule} onChange={setRule} userAttrList={UserAttrList}/>
+          <RuleGroupComponent group={rule} onChange={setRule} userAttrList={[ ...UserAttrList, ...newUserAttrList ]}/>
         </div>
       </div>
       <div className="flex">
@@ -158,18 +162,13 @@ const DefaultSelectDialogComponent = (props: DefaultSelectDialogComponentProps) 
 
 
 const AddProductDropdown = ({ handleAddProduct }: {handleAddProduct: (product: SortProductType) => void}) => {
-  const products: SortProductType[] = [
-    { id: '1', name: '商品1' },
-    { id: '2', name: '商品2' },
-    { id: '3', name: '商品3' },
-    { id: '4', name: '商品4' },
-  ]
+  const products: SortProductType[] = productIDS.map(item => ({ id: item.value, name: item.label }))
   return <>
     <DropdownMenu>
       <DropdownMenuTrigger>
         <Button>添加商品</Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent side="right">
         {
           products.map((product, index) => (
             <>

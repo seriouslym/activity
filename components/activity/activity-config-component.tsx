@@ -16,14 +16,23 @@ type ActConfigProp = {
 }
 
 
+export const productIDS = [
+  { label: '连续包月', value: '562b47719ecb94ee5941288c_xf', key: 'productId', },
+  { label: '半年VIP', value: 'QXB_VIP_6M', key: 'productId', },
+  { label: '包年VIP', value: 'QXB_VIP_1Y_XF', key: 'productId', },
+  { label: '一年VIP', value: '562b47719ecb94ee5941288c', key: 'productId', },
+  { label: '两年VIP', value: '562b47739aed94ee59417933', key: 'productId', },
+  { label: '三年VIP', value: '78445bcde7a74652bf46e709', key: 'productId', },
+  { label: '一年SVIP', value: 'QXB_VIP_SVIP_1Y', key: 'productId', },
+  { label: '两年SVIP', value: 'QXB_VIP_SVIP_2Y', key: 'productId', },
+  { label: '三年SVIP', value: 'QXB_VIP_SVIP_3Y', key: 'productId', },
+  { label: '一年团队版', value: '5e96e645f6ec30ed34c07d5b', key: 'productId', },
+  { label: '两年团队版', value: '5ecf3092a053191122596321', key: 'productId', },
+  { label: '三年团队版', value: '5ecf309ba053191122596322', key: 'productId', },
+] 
+
 const activityList: (activity)[] = [
-  { label: '商品', submenus: [
-    { label: '半年VIP', value: '11', key: 'productId', },
-    { label: '一年VIP', value: '22', key: 'productId', },
-    { label: '两年VIP', value: '33', key: 'productId', },
-    { label: '三年VIP', value: '44', key: 'productId', },
-    { label: 'SVIP', value: '55', key: 'productId', },
-  ] },
+  { label: '商品', submenus: productIDS },
   { label: '商品头部标签', key: 'overHeadTag' },
   { label: '折合价', key: 'titleByYear', },
   { label: '折合价单位', key: 'period', },
@@ -32,14 +41,14 @@ const activityList: (activity)[] = [
   { label: '赠送天数', submenus: [
     { label: 'vip赠送天数', key: 'gift', },
     { label: 'svip赠送天数', key: 'gift', },
-    { label: '团队版赠送天数', key: 'gift', }
+    { label: '团队版赠送天数', key: 'team-gift', }
   ] },
   { label: '文案描述', submenus: [
     { label: 'vip文案配置', submenus: [
-      { label: 'vip配置1', key: 'vip.title' },
-      { label: 'vip配置2', key: 'vip.text' },
+      { label: 'vip配置1', key: 'title' },
+      { label: 'vip配置2', key: 'text' },
     ] },
-    { label: '团队版文案配置', key: 'team.text' },
+    { label: '团队版文案配置', key: 'text' },
   ] },
 ]
 
@@ -57,6 +66,16 @@ export default function ActConfig({ acts, name, setActs }: ActConfigProp){
 
   const handleAddActConfig = (act: ActProp) => {
     setActs([...acts, act])
+  }
+
+  const setPlaceholder = (key: string) => {
+    if (key === 'gift') {
+      return 'xx单位（xx是数字，单位可以是年 月 天）'
+    } else if (key === 'team-gift') {
+      return '5;1;5(每5人赠送1人赠送上限5人)'
+    } else {
+      return '请配置活动元素的值'
+    }
   }
   return <div className="space-y-2">
     <div className="flex items-center space-x-4"> 
@@ -85,7 +104,7 @@ export default function ActConfig({ acts, name, setActs }: ActConfigProp){
                 { item.key === 'productId' ? (
                   <Input className='w-48 border border-black' value={item.value} disabled ></Input>
                 ): (
-                  <Input className='w-48 border border-black ' placeholder="请配置活动元素的值" value={item.value} onChange={(e: any) => {handleInputChange(index, e.target.value)}} required></Input>
+                  <Input className='w-[50%] border border-black ' placeholder={setPlaceholder(item.key)} value={item.value} onChange={(e: any) => {handleInputChange(index, e.target.value)}} required></Input>
                 )}
                 <button className='absolute right-0 top-1 text-zinc-500' type='button' onClick={() => handleDeleteActConfig(index)}>
                   <X size={20}/>

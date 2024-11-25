@@ -6,7 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import type { BaseRule } from "@/components/rule/rule-group-component"
 import { Input } from "@/components/ui/input"
 
-const operators: BaseRule['operator'][] = ['==', '!=', '<', '>', 'in', '>=', '<=']
+const operators: BaseRule['operator'][] = ['=', '!=', '<', '>', 'in', '>=', '<=']
 const platforms = [
   { label: 'PC网站', value: 'web' },
   { label: '安卓', value: 'android' },
@@ -46,7 +46,7 @@ export function SelectComponent({ items, handleBasicRuleChange, defaultValue }: 
     if (newSet.size > 1) {
       handleBasicRuleChange({ operator: 'in', value: Array.from(newSet) })
     } else {
-      handleBasicRuleChange({ operator: '==', value: newSet.values().next().value || '' })
+      handleBasicRuleChange({ operator: '=', value: newSet.values().next().value || '' })
     }
   }
   return (
@@ -155,7 +155,7 @@ type UserTypeComponentProps = {
 
 export function UserTypeComponent({ defaultValue, handleBasicRuleChange }: UserTypeComponentProps) {
   useEffect(() => {
-    handleBasicRuleChange({ value: defaultValue, operator: '==' })
+    handleBasicRuleChange({ value: defaultValue, operator: '=' })
   }, [])
   return <></>
 }
@@ -167,13 +167,14 @@ type ComponentByUserTypeProps = {
   handleBasicRuleChange: (_ruleValue: Partial<BaseRule>) => void
 }
 export function ComponentByUserType({ userKey, inputValue, operator, handleBasicRuleChange }: ComponentByUserTypeProps) {
-  if (userKey === 'user.wasVip') return <CheckboxComponent defaultValue={inputValue as string || '1'} items={[{ label: '是', value: '1' }, { label: '不是', value: '0' }]} onValueChange={(value) => handleBasicRuleChange({ value: value, operator: '==' })} />
-  if (userKey === 'user.mpType') return <CheckboxComponent defaultValue={inputValue as string || 'weixin'} items={[{ label: '微信', value: 'weixin' }, { label: '百度', value: 'baidu' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '==' })} />
-  if (userKey === 'user.systemOs') return <CheckboxComponent defaultValue={inputValue as string || 'android'} items={[{ label: '安卓', value: 'android' }, { label: '苹果', value: 'ios' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '==' })} />
+  if (userKey === 'user.wasVip') return <CheckboxComponent defaultValue={inputValue as string || '1'} items={[{ label: '是', value: '1' }, { label: '不是', value: '0' }]} onValueChange={(value) => handleBasicRuleChange({ value: value, operator: '=' })} />
+  if (userKey === 'user.mpType') return <CheckboxComponent defaultValue={inputValue as string || 'weixin'} items={[{ label: '微信', value: 'weixin' }, { label: '百度', value: 'baidu' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '=' })} />
+  if (userKey === 'user.systemOs') return <CheckboxComponent defaultValue={inputValue as string || 'android'} items={[{ label: '安卓', value: 'android' }, { label: '苹果', value: 'ios' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '=' })} />
   if (userKey === 'platform') return <SelectComponent defaultValue={inputValue || ''} items={platforms} handleBasicRuleChange={handleBasicRuleChange} operator={operator} />
   if (userKey === 'user.type') return <UserTypeComponent defaultValue={inputValue as string} handleBasicRuleChange={handleBasicRuleChange} />
   if (userKey === 'user.userId') return <InputComponent operator='in' handleBasicRuleChange={handleBasicRuleChange} inputValue={inputValue as string} placeholder="使用英文分号隔开；左侧是用户id倒数第几位；右侧是用户所在的白名单；"/>
-  if (userKey === 'type') return <CheckboxComponent defaultValue={inputValue as string || 'vip'} items={[{ label: 'vip', value: 'vip' }, { label: 'svip', value: 'svip' }, { label: 'teamVip', value: 'teamVip' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '==' })} />
-  if (userKey === 'origin') return <CheckboxComponent defaultValue={inputValue as string || 'market_activity'} items={[{ label: '运营活动', value: 'market_activity' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '==' })} />
+  if (userKey === 'type') return <CheckboxComponent defaultValue={inputValue as string || 'vip'} items={[{ label: 'vip', value: 'vip' }, { label: 'svip', value: 'svip' }, { label: 'teamVip', value: 'teamVip' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '=' })} />
+  if (userKey === 'origin') return <CheckboxComponent defaultValue={inputValue as string || 'market_activity'} items={[{ label: '运营活动', value: 'market_activity' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '=' })} />
+  if (userKey === 'user') return <CheckboxComponent defaultValue={inputValue as string || 'null'} items={[{ label: '全部用户', value: 'null' }]} onValueChange={(value) => handleBasicRuleChange({ value, operator: '!=' })} />
   return <InputComponent operator={operator} handleBasicRuleChange={handleBasicRuleChange} inputValue={inputValue as string} />
 }

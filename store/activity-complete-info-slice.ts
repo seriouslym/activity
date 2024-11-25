@@ -2,11 +2,12 @@
  * 活动完整信息存储
  */
 
-import { PayloadAction, createSlice } from "@reduxjs/toolkit"
+import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { PeoPleDivision } from "./people-division-slice"
 import { ActivityItem } from "./activity-config-slice"
 import { DefaultSelectType } from "./default-select-slice"
 import { SortConfig } from "./product-sort-slice"
+import axios from "axios"
 
 type ActivityCompleteInfo = {
   name: string, // 11月活动
@@ -15,8 +16,21 @@ type ActivityCompleteInfo = {
   peopleDivision: PeoPleDivision[], // 人群划分配置
   activityItems: ActivityItem[], // 活动配置,
   defaultSelect: DefaultSelectType[], // 默认选择
-  productSort: SortConfig, // 商品排序
+  productSort: SortConfig, // 商品排序,
+  status: number
 }
+
+
+export const fetchActivityCompleteInfo = createAsyncThunk('ActivityCompleteInfo/getData', async () => {
+  try {
+    const res = await axios.post<{data: [{config: string, status: number}]}>('http://127.0.0.1:8888/getAllActivityConfig')
+    console.log('fetchActivityCompleteInfo', res.data.data)
+    return res.data.data.map(item => ({ ...JSON.parse(item.config), status: item.status }))
+  } catch (error) {
+    const res = window.localStorage.getItem('acts')
+    return res? JSON.parse(res): []
+  }
+})
 
 
 export const ActivityCompleteInfoSlice = createSlice({
@@ -33,6 +47,7 @@ export const ActivityCompleteInfoSlice = createSlice({
     },
     updateActivityCompleteInfo: (state, action: PayloadAction<ActivityCompleteInfo & {index: number}>) => {
       state.activityCompleteInfos[action.payload.index] = {
+        ...state.activityCompleteInfos[action.payload.index],
         name: action.payload.name,
         startTime: action.payload.startTime,
         endTime: action.payload.endTime,
@@ -42,6 +57,11 @@ export const ActivityCompleteInfoSlice = createSlice({
         productSort: action.payload.productSort
       }
     }
+  },
+  extraReducers: (builder) => {
+    builder.addCase(fetchActivityCompleteInfo.fulfilled, (state, action) => {
+      state.activityCompleteInfos = action.payload
+    })
   }
 })
 

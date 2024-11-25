@@ -9,8 +9,8 @@ import { ActivityItem, clearActivityItem, setActivityItem } from "@/store/activi
 import { PeoPleDivision, clearPeopleDivision, setPeopleDivision } from "@/store/people-division-slice"
 import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-
 export default function Home() {
+  
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
   const addActivity = () => {
@@ -59,6 +59,7 @@ const ActivitiesTableComponent = () => {
   const deleteActivity = (index: number) => {
     dispatch(deleteActivityCompleteInfo(index))
   }
+
   return <>
     <div >
       <Table>
@@ -68,7 +69,7 @@ const ActivitiesTableComponent = () => {
             <TableHead>活动名称</TableHead>
             <TableHead>开始时间</TableHead>
             <TableHead>结束时间</TableHead>
-            <TableHead>相关活动</TableHead>
+            <TableHead>状态</TableHead>
             <TableHead className="flex justify-center items-center">操作</TableHead>
           </TableRow>
         </TableHeader>
@@ -80,7 +81,7 @@ const ActivitiesTableComponent = () => {
                 <TableCell>{activity.name}</TableCell>
                 <TableCell>{activity.startTime}</TableCell>
                 <TableCell>{activity.endTime}</TableCell>
-                <TableCell>{1}</TableCell>
+                <TableCell>{activity.status === 0? '未发布': activity.status === 1? '已上线': '已下线'}</TableCell>
                 <TableCell className="space-x-4 flex justify-center items-center">
                   <Dialog open={open} onOpenChange={setOpen}>
                     <Button onClick={() => editActivity(activity.activityItems, activity.peopleDivision)}>编辑</Button>
@@ -89,7 +90,12 @@ const ActivitiesTableComponent = () => {
                     </DialogContent>
                   </Dialog>
                   <Button variant='outline' onClick={() => deleteActivity(index)}>删除</Button>
-                  <Button variant='destructive'>发布</Button>
+                  {
+                    activity.status === 0 && <Button variant='destructive' onClick={() => console.log(JSON.stringify(activity))}>发布</Button>
+                  }
+                  {
+                    activity.status === 1 && <Button variant='destructive' onClick={() => console.log(JSON.stringify(activity))}>下线</Button>
+                  }
                 </TableCell>
               </TableRow>
             )): <TableRow>
@@ -98,10 +104,6 @@ const ActivitiesTableComponent = () => {
           }
         </TableBody>
       </Table>
-
-      <pre>
-        {JSON.stringify(activities, null, 2)}
-      </pre>
     </div>
   </>
 }

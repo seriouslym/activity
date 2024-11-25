@@ -1,3 +1,4 @@
+import { productIDS } from "@/components/activity/activity-config-component"
 import { SortProductType } from "@/components/activity/product-sort-component"
 import { RuleGroup } from "@/components/rule/rule-group-component"
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
@@ -14,7 +15,7 @@ export type SortConfig = {
 
 const sortConfig: SortConfig = {
   name: "默认",
-  defaultSort: [{ id: "1", name: "一年vip" }, { id: "2", name: "两年vip" }, { id: "3", name: "三年vip" }],
+  defaultSort: productIDS.filter(item => ['连续包月', '包年VIP', '半年VIP', '一年VIP', '两年VIP', '三年VIP'].includes(item.label)).map(item => ({ id: item.value, name: item.label })),
   extraSort: []
 }
 

@@ -113,18 +113,19 @@ const alertCtrl = (setAlert: Function, message: string) => {
 }
 
 export const checkRuleGroup = (ruleGroup: RuleGroup): boolean => {
-  if (ruleGroup.rule.length === 0) {
-    return false
-  }
-  for (let rule of ruleGroup.rule) {
-    if ('value' in rule) {
-      if (rule.value === null || rule.value === '') {
-        return false
-      }
-    } else {
-      return checkRuleGroup(rule)
-    }
-  }
+  // if (ruleGroup.rule.length === 0) {
+  //   return false
+  // }
+  // for (let rule of ruleGroup.rule) {
+  //   if ('value' in rule) {
+  //     if (rule.value === null || rule.value === '') {
+  //       return false
+  //     }
+  //   } else {
+  //     return checkRuleGroup(rule)
+  //   }
+  // }
+  // 可以为一个空规则
   return true
 }
 

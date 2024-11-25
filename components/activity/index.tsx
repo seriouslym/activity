@@ -50,10 +50,6 @@ export default function Activity(props: ActivityProps) {
     resolver: zodResolver(ActivityBasicInfoFormSchema)
   })
   const onActivitySubmit = (data: FormValues) => {
-    console.log('activityItems', activityItems)
-    console.log('peopleDivisionState', peopleDivisionState)
-    console.log('defaultSelect', defaultSelect)
-    console.log('productSort', productSort)
     if (!activityItems.length) {
       setAlert(true)
       setTimeout(() => setAlert(false), 2000)
@@ -64,7 +60,8 @@ export default function Activity(props: ActivityProps) {
       activityItems: activityItems,
       defaultSelect,
       productSort,
-      ...data
+      ...data,
+      status: 0
     }))
     dispath(clearActivityItem())
     dispath(clearPeopleDivision())
@@ -83,6 +80,7 @@ export default function Activity(props: ActivityProps) {
       activityItems: activityItems,
       defaultSelect: defaultSelect,
       productSort: productSort,
+      status: 0,
       ...data
     }))
     dispath(clearActivityItem())
